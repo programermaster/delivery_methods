@@ -115,12 +115,12 @@ require("DeliveryMethods.php");
                             <?php foreach($delivaryMethod["ranges"] as $range){ ?>
                                 <div class="row">
                                     <span class="col-md-2">
-                                        <label class="col-md-3">From</label><input type="text" class="col-md-7" name="range_from[<?php echo $id?>][<?php echo $range['id']?>]" value="<?php echo $range['from'] ?>">$
+                                        <label class="col-md-3">From</label><input type="text" class="col-md-7" name="range_from[][<?php echo $range['id']?>]" value="<?php echo $range['from'] ?>">$
                                     </span>
                                     <span class="col-md-2">
-                                        <label class="col-md-3">To</label><input type="text" class="col-md-7" name="range_to[<?php echo $id?>][<?php echo $range['id']?>]" value="<?php echo $range['to'] ?>">$
+                                        <label class="col-md-3">To</label><input type="text" class="col-md-7" name="range_to[][<?php echo $range['id']?>]" value="<?php echo $range['to'] ?>">$
                                     </span>
-                                    <input type="text" class="col-md-offset-1" name="range_price[<?php echo $id?>][<?php echo $range['id']?>]" value="<?php echo $range['price'] ?>">$
+                                    <input type="text" class="col-md-offset-1" name="range_price[][<?php echo $range['id']?>]" value="<?php echo $range['price'] ?>">$
                                     <a href="#"  class="col-md-offset-3 add_new_range">Add New</a>
                                     <a href="#" class="col-md-offset-1 delete_range">Delete</a>
                                 </div>
@@ -132,12 +132,12 @@ require("DeliveryMethods.php");
                         <div class="panel-body ranges"  id="range-<?php echo $id?>">
                             <div class="row">
                                  <span class="col-md-2">
-                                    <label class="col-md-3">From </label><input type="text" class="col-md-7" name="range_from[<?php echo $id?>][]" value="">$
+                                    <label class="col-md-3">From </label><input type="text" class="col-md-7" name="range_from[][-1]" value="">$
                                 </span>
                                 <span class="col-md-2">
-                                    <label class="col-md-3">To</label><input type="text" class="col-md-7" name="range_to[<?php echo $id?>][]" value="">$
+                                    <label class="col-md-3">To</label><input type="text" class="col-md-7" name="range_to[][-1]" value="">$
                                 </span>
-                                <input type="text" class="col-md-offset-1" name="price[<?php echo $id?>][]" value="">$
+                                <input type="text" class="col-md-offset-1" name="price[][-1]" value="">$
                                 <a href="#" class="col-md-offset-3 add_new_range">Add New</a>
                                 <a href="#" class="col-md-offset-1 delete_range">Delete</a>
                             </div>
@@ -154,7 +154,8 @@ require("DeliveryMethods.php");
                                 <div class="row">&nbsp;</div>
                                 <div class="row">
                                     <span class="col-md-5"> <label>Weight (accpeted deliveries in KG) Url</label></span>
-                                    <span  class="col-md-7"> From<input type="text" name="fromWeight[<?php echo $id ?>]" value="<?php echo $delivaryMethod['from_weight']?>"> To<input type="text" name="toWeight[<?php echo $id ?>]" value="<?php echo $delivaryMethod['to_weight']?>">KG</span>
+                                    <span  class="col-md-7"> From<input type="text" name="from_weight[<?php echo $id ?>]" value="<?php echo $delivaryMethod['from_weight']?>"> 
+                                                             To<input type="text" name="to_weight[<?php echo $id ?>]" value="<?php echo $delivaryMethod['to_weight']?>">KG</span>
                                 </div>
                                 <div class="row">&nbsp;</div>
                                 <div class="row">
@@ -175,12 +176,12 @@ require("DeliveryMethods.php");
     <div class="range-template"  style="display:none">
         <div class="row">
              <span class="col-md-2">
-                <label class="col-md-3">From </label><input type="text" class="col-md-7" name="range_from[<?php echo $id?>][]" value="">$
+                <label class="col-md-3">From </label><input type="text" class="col-md-7" name="range_from[][-1]" value="">$
             </span>
             <span class="col-md-2">
-                <label class="col-md-3">To</label><input type="text" class="col-md-7" name="range_to[<?php echo $id?>][]" value="">$
+                <label class="col-md-3">To</label><input type="text" class="col-md-7" name="range_to[][-1]" value="">$
             </span>
-            <input type="text" class="col-md-offset-1" name="price[<?php echo $id?>][]" value="">$
+            <input type="text" class="col-md-offset-1" name="price[][-1]" value="">$
             <a href="#" class="col-md-offset-3 add_new_range">Add New</a>
             <a href="#" class="col-md-offset-1 delete_range">Delete</a>
         </div>
