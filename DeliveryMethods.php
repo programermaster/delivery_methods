@@ -62,48 +62,51 @@ class DeliveryMethods
     }
 
     public function save($data){        
-        
-        foreach($data["delivery_url"] as $key => $delivery_url) {
-            
-            if(!isset( $data['price'][$key])) continue;
-            
-            $sql = "UPDATE `method` SET `value` = '" . $data['price'][$key] . "'," .
-                                                  "`delivery_url`= '" . $delivery_url . "'," .
-                                                  "`from_weight`= '". $data['from_weight'][$key] . "'," .
-                                                  "`to_weight`= '". $data['to_weight'][$key] ."'," .
-                                                  "`notes`= '" .  $data['notes'][$key] ."'".
-                                                  " WHERE `id`=" . $key;
-            //echo $sql;
-        
-            $this->_db->query($sql);
-        }
-        
-        foreach($data["range_price"] as $delivery_method_id => $range){
-            foreach($range as $order => $range_price){
+        try{
+            foreach($data["delivery_url"] as $key => $delivery_url) {
 
-                $id = key($range_price);
+                if(!isset( $data['price'][$key])) continue;
 
-                if($id!=-1) {     
-
-                    $sql = "UPDATE `ranges` SET `price`='". $range_price[$id] . "',".
-                                            "`from`='" . $data["range_from"][$delivery_method_id][$order][$id] . "',".
-                                            "`to`='" . $data["range_to"][$delivery_method_id][$order][$id] . "',". 
-                                            "`order`='" . $order. "'".
-                                            " WHERE `id`=" . $id;
-                }
-                else{
-                    
-                    $sql = "INSERT INTO `ranges` SET `price` = '". $range_price[$id] . "',".
-                                            "`from` = '". $data["range_from"][$delivery_method_id][$order][$id] . "',".
-                                            "`to` = '". $data["range_to"][$delivery_method_id][$order][$id] . "',". 
-                                            "`delivery_method_id` = '". $delivery_method_id . "'," .
-                                            "`order` = '". $order. "'";
-                }
-
+                $sql = "UPDATE `method` SET `value` = '" . $data['price'][$key] . "'," .
+                                                      "`delivery_url`= '" . $delivery_url . "'," .
+                                                      "`from_weight`= '". $data['from_weight'][$key] . "'," .
+                                                      "`to_weight`= '". $data['to_weight'][$key] ."'," .
+                                                      "`notes`= '" .  $data['notes'][$key] ."'".
+                                                      " WHERE `id`=" . $key;
                 //echo $sql;
 
-                $this->_db->query($sql);            
+                $this->_db->query($sql);
             }
+
+            foreach($data["range_price"] as $delivery_method_id => $range){
+                foreach($range as $order => $range_price){
+
+                    $id = key($range_price);
+
+                    if($id!=-1) {     
+
+                        $sql = "UPDATE `ranges` SET `price`='". $range_price[$id] . "',".
+                                                "`from`='" . $data["range_from"][$delivery_method_id][$order][$id] . "',".
+                                                "`to`='" . $data["range_to"][$delivery_method_id][$order][$id] . "',". 
+                                                "`order`='" . $order. "'".
+                                                " WHERE `id`=" . $id;
+                    }
+                    else{
+
+                        $sql = "INSERT INTO `ranges` SET `price` = '". $range_price[$id] . "',".
+                                                "`from` = '". $data["range_from"][$delivery_method_id][$order][$id] . "',".
+                                                "`to` = '". $data["range_to"][$delivery_method_id][$order][$id] . "',". 
+                                                "`delivery_method_id` = '". $delivery_method_id . "'," .
+                                                "`order` = '". $order. "'";
+                    }
+
+                    //echo $sql;
+
+                    $this->_db->query($sql);            
+                }
+            }
+        }catch(Exception $e){
+            return false;
         }
         
         return true;  
@@ -119,14 +122,14 @@ if(isset($_POST["save"])){
     
     if($dm->isValid()){
         if($dm->save($data)) {
-             echo json_encode(array("success", true));
+             echo json_encode(array("success"=>true));
         }
         else{
-             echo json_encode(array("error", "something wrong"));
+             echo json_encode(array("error" => "Something wrong"));
         }
     }
     else{
-         echo json_encode(array("error_form", $dm->returnErrorForm()));
+         echo json_encode(array("error_form" => $dm->returnErrorForm()));
     }
     die();
 }
