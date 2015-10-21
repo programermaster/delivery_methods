@@ -159,11 +159,19 @@ class DeliveryMethods
                     }
 
                     //echo $sql;
-
-                    $this->_db->query($sql);            
+                    $this->_db->query($sql);
                 }
             }
-        }catch(Exception $e){
+            
+            if($data["deleted_ranges"]!=""){
+                    $data["deleted_ranges"] = explode(",", substr($data["deleted_ranges"],0, -1));
+                    foreach($data["deleted_ranges"] as $key=>$range_id){
+                        $sql = "DELETE FROM `ranges` WHERE `id`=" . $range_id;
+                        $this->_db->query($sql);
+                    }
+             }
+                
+        } catch(Exception $e) {
             return false;
         }
         

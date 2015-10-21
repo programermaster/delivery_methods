@@ -85,20 +85,23 @@ require("DeliveryMethods.php");
             });
 
             $('body').on('click', '.delete_range', function(){
+                range_id = $(this).data("range_id");                
+                $("#deleted_ranges").val($("#deleted_ranges").val() + range_id + ",");
                 $(this).parent().remove();
             });
 
             $("#save_form").click(function(){
+               
                 $.ajax({
                     url: 'index.php',
                     type: 'post',
                     dataType: 'json',
                     data: $('form').serialize(),
                     success: function(data) {
+                        $(".error").remove();
                         if(data.success) alert("Data is succesfully saved")
                         else if(data.error) alert(data.error)
                         else if(data.error_form){
-                            $(".error").remove();
                             for(key in data.error_form) {
                                 for(delivery_method_id in data.error_form[key] )
                                 $("#"+key+"-"+delivery_method_id).append("<span class='error col-md-12'>" +  data.error_form[key][delivery_method_id]+"</span>");
@@ -116,6 +119,7 @@ require("DeliveryMethods.php");
 
     <div class="container container-fluid col-md-12">
     <form>
+        <input type="hidden" id="deleted_ranges" name="deleted_ranges" value="">
     <?php foreach($deliveryMethods as $id => $deliveryMethod){ ?>
 
                 <div class="panel panel-info">
@@ -127,7 +131,7 @@ require("DeliveryMethods.php");
                         <h3 class="col-md-1 panel-title">Free</h3>
 
                     <?php } else if ($deliveryMethod["price"] > 0) { ?>
-                        <span class="col-md-2" id="price-<?php echo $id ?>"><input type="text"  name="price[<?php echo $id ?>]" value="<?php echo $deliveryMethod["price"]?>">$</span>
+                        <span class="col-md-3" id="price-<?php echo $id ?>"><input type="text"  name="price[<?php echo $id ?>]" value="<?php echo $deliveryMethod["price"]?>">$</span>
                     <?php } ?>
 
                     <?php if(count($deliveryMethod["ranges"]) > 0){ ?>
@@ -156,11 +160,11 @@ require("DeliveryMethods.php");
                                     <span class="col-md-2" id="range_to-<?php echo $range['id'] . "-" . $id  ?>">
                                         <label class="col-md-3">To</label><input type="text" class="col-md-7"  name="range_to[<?php echo $id ?>][][<?php echo $range['id']?>]" value="<?php echo $range['to'] ?>">$
                                     </span>
-                                    <span class="col-md-2" id="range_price-<?php echo $range['id'] . "-" . $id ?>">
+                                    <span class="col-md-3" id="range_price-<?php echo $range['id'] . "-" . $id ?>">
                                         <input type="text" class="col-md-offset-1" name="range_price[<?php echo $id ?>][][<?php echo $range['id']?>]" value="<?php echo $range['price'] ?>">$
                                     </span>
                                     <a href="#" class="col-md-offset-3 add_new_range" id="add_new_range-<?php echo $id ?>">Add New</a>
-                                    <a href="#" class="col-md-offset-1 delete_range">Delete</a>
+                                    <a href="#" class="col-md-offset-1 delete_range" data-range_id="<?php echo $range['id']?>">Delete</a>
                                 </div>
                             <?php } ?>
                         </div>
@@ -175,16 +179,16 @@ require("DeliveryMethods.php");
 
                                 <div class="row">
                                     <span class="col-md-5"> <label>Delivary Url</label></span>
-                                    <span class="col-md-5" id="delivery_url-<?php echo $id ?>">
+                                    <span class="col-md-2" id="delivery_url-<?php echo $id ?>">
                                         <input type="text"  name="delivery_url[<?php echo $id ?>]" value="<?php echo $deliveryMethod['delivery_url']?>">
                                     </span>
                                 </div>
                                 <div class="row">&nbsp;</div>
                                 <div class="row">
-                                    <span class="col-md-5"> <label>Weight (accpeted deliveries in KG) Url</label></span>
+                                    <span class="col-md-5"> <label>Weight (accepted deliveries in KG) Url</label></span>
                                     <span  class="col-md-7">
-                                         <span class="col-md-4" id="from_weight-<?php echo $id ?>">From <input type="text" name="from_weight[<?php echo $id ?>]" value="<?php echo $deliveryMethod['from_weight']?>"></span>
-                                         <span class="col-md-4" id="to_weight-<?php echo $id ?>">To <input type="text" name="to_weight[<?php echo $id ?>]" value="<?php echo $deliveryMethod['to_weight']?>">KG</span>
+                                         <span class="col-md-5" id="from_weight-<?php echo $id ?>">From <input type="text" name="from_weight[<?php echo $id ?>]" value="<?php echo $deliveryMethod['from_weight']?>"></span>
+                                         <span class="col-md-5" id="to_weight-<?php echo $id ?>">To <input type="text" name="to_weight[<?php echo $id ?>]" value="<?php echo $deliveryMethod['to_weight']?>">KG</span>
                                     </span>
                                 </div>
                                 <div class="row">&nbsp;</div>
