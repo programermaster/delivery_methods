@@ -3,6 +3,9 @@
 class DeliveryMethods
 {
     private $_db;
+    private $_errors_delivary_method = array();
+    private $_errors_ranges  = array();
+
     public function __construct(){
 
 
@@ -57,8 +60,63 @@ class DeliveryMethods
         return $data;
     }
     
-    public function isValid(){
-        return true;
+    public function isValid($data){
+
+
+        foreach($data["delivery_url"] as $key => $delivery_url) {
+
+            if(!isset( $data['price'][$key])) continue;
+
+
+            if(!empty($data['price'][$key]) && !is_numeric($data['price'][$key])){
+                $this->_errors_delivary_method["price"][$key] = "Price has to be number";
+            }
+
+            if (!empty($delivery_url) &&  filter_var($delivery_url, FILTER_VALIDATE_URL) === false){
+                $this->_errors_delivary_method["delivery_url"][$key] = "URL is not valid";
+            }
+
+            if(!empty($data['from_weight'][$key]) && !is_numeric($data['from_weight'][$key])){
+                $this->_errors_delivary_method["from_weight"][$key] = "From Weight has to be number";
+            }
+
+            if(!empty($data['to_weight'][$key]) && !is_numeric($data['to_weight'][$key])){
+                $this->_errors_delivary_method["to_weight"][$key] = "To Weight has to be number";
+            }
+        }
+
+        foreach($data["range_price"] as $delivery_method_id => $range) {
+            foreach ($range as $order => $range_price) {
+
+                $id = key($range_price);
+
+                if (!empty($data["range_from"][$delivery_method_id][$order][$id]) && !is_numeric($data["range_from"][$delivery_method_id][$order][$id])) {
+                    if($id!=-1) $this->_errors_ranges["range_from-" . $id][$delivery_method_id] = "Range From has to be number";
+                    else  $this->_errors_ranges["range_from-" . $delivery_method_id. "-".$order][$delivery_method_id] = "Range From has to be number";
+                }
+                if (!empty($data["range_to"][$delivery_method_id][$order][$id]) && !is_numeric($data["range_to"][$delivery_method_id][$order][$id])) {
+                    if($id!=-1) $this->_errors_ranges["range_to-" . $id][$delivery_method_id] = "Range To has to be number";
+                    else  $this->_errors_ranges["range_to-" . $delivery_method_id. "-".$order][$delivery_method_id] = "Range To has to be number";
+                }
+
+                if (!empty($range_price[$id]) && !is_numeric($range_price[$id])) {
+
+                    if($id!=-1) $this->_errors_ranges["range_price-" . $id][$delivery_method_id] = "Range price has to be number";
+                    else  $this->_errors_ranges["range_price-" . $delivery_method_id. "-".$order][$delivery_method_id] = "Range price has to be number";
+
+                } else if ($range_price[$id] < $data["range_from"][$delivery_method_id][$order][$id] || $range_price[$id] > $data["range_to"][$delivery_method_id][$order][$id]) {
+                    if($id!=-1) $this->_errors_ranges["range_price-" . $id][$delivery_method_id] = "Price has to be between interval prices";
+                    else  $this->_errors_ranges["range_price-" .  $delivery_method_id. "-".$order][$delivery_method_id] = "Price has to be between interval prices";
+                }
+            }
+        }
+
+        if((count($this->_errors_ranges) == 0) &&  count($this->_errors_delivary_method) == 0) return true;
+    }
+
+    public function returnErrorForm(){
+
+        return array_merge($this->_errors_delivary_method, $this->_errors_ranges);
     }
 
     public function save($data){        
@@ -120,7 +178,7 @@ if(isset($_POST["save"])){
     
     $data = $dm->cleanPostData($_POST);
     
-    if($dm->isValid()){
+    if($dm->isValid($data)){
         if($dm->save($data)) {
              echo json_encode(array("success"=>true));
         }
