@@ -1,13 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 3.4.10.1deb1
+-- version 4.0.10deb1
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 20, 2015 at 03:41 AM
--- Server version: 5.5.43
--- PHP Version: 5.4.33-2+deb.sury.org~lucid+1
+-- Generation Time: Oct 21, 2015 at 02:10 AM
+-- Server version: 5.5.44-0ubuntu0.14.04.1
+-- PHP Version: 5.5.9-1ubuntu4.12
 
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
 
@@ -19,6 +19,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `delivery_methods`
 --
+CREATE DATABASE IF NOT EXISTS `delivery_methods` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+USE `delivery_methods`;
 
 -- --------------------------------------------------------
 
@@ -35,16 +37,17 @@ CREATE TABLE IF NOT EXISTS `method` (
   `to_weight` decimal(5,2) NOT NULL,
   `notes` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
 
 --
 -- Dumping data for table `method`
 --
 
 INSERT INTO `method` (`id`, `name`, `value`, `delivery_url`, `from_weight`, `to_weight`, `notes`) VALUES
-(1, 'Delivery method0', NULL, '', '0.00', '0.00', ''),
-(2, 'Delivery method1', '0.00', '', '0.00', '0.00', ''),
-(3, 'Delivery method2', '10.00', 'www.google.com', '5.00', '10.00', 'This is super delivery');
+(1, 'Delivery method0', NULL, '', 0.00, 0.00, ''),
+(2, 'Delivery method1', 0.00, '', 0.00, 0.00, ''),
+(3, 'Delivery method2', 10.00, 'http://www.google.com', 15.00, 25.00, 'This is super delivery'),
+(4, 'Delivery method2', 20.00, 'http://www.yahoo.com', 10.00, 40.00, '');
 
 -- --------------------------------------------------------
 
@@ -60,17 +63,17 @@ CREATE TABLE IF NOT EXISTS `ranges` (
   `delivery_method_id` int(11) NOT NULL,
   `order` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=8 ;
 
 --
 -- Dumping data for table `ranges`
 --
 
 INSERT INTO `ranges` (`id`, `from`, `to`, `price`, `delivery_method_id`, `order`) VALUES
-(1, '10.00', '20.00', '15.00', 3, 0),
-(2, '30.00', '40.00', '35.00', 3, 2),
-(4, '50.00', '60.00', '55.00', 2, 0),
-(5, '40.00', '50.00', '45.00', 3, 1);
+(1, 10.00, 20.00, 15.00, 3, 0),
+(2, 30.00, 40.00, 35.00, 3, 2),
+(4, 50.00, 60.00, 55.00, 2, 0),
+(5, 40.00, 50.00, 45.00, 3, 1);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
